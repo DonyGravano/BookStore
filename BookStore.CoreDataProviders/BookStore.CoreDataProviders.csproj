@@ -28,7 +28,7 @@
 
 	<ItemGroup>
 	  <None Update="books.db">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
 

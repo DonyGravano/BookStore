@@ -47,7 +47,7 @@ public class SqlLiteBookRepository : IBookRepository
 
     public async Task<IReadOnlyList<Book>> GetBooksAsync()
     {
-        return await _queryExecutor.QueryAsync<Book>("SELECT * FROM books");
+        return await _queryExecutor.QueryAsync<Book>("SELECT Id, Author, Title, CAST(Price AS DOUBLE) AS Price FROM books");
     }
 
     public async Task UpdateBookAsync(int id, Book book)
