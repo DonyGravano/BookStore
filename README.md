@@ -8,6 +8,10 @@ Please see the spec.md file in the codebase for the technical spec
 -	I've made some rough assumptions on the validation of the book model
 -	No acceptance tests are needed
 
+## Running the code
+
+You shouldn't need to do anything specific to run the code. It is worth noting that by default a fresh DB will be used each time, to prevent this change the books.db "Copy to Output directory" property within the CoreDataProvider project.
+
 ## Design Notes
 -	I've used dependency injection and interfaces to register everything as it provides good flexiblity for testing and if logic/implementations are ever needed to be swapped out.
 -	I don't have ReSharper on my personal PC so code formatting won't be auto checked

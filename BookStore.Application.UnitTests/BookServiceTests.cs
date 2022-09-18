@@ -2,116 +2,109 @@
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.NUnit3;
-using BookStore.Application.Interfaces;
 using BookStore.CoreDataProviders.Interfaces;
 using BookStore.Models;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BookStore.Application.UnitTests
+namespace BookStore.Application.UnitTests;
+
+[TestFixture]
+public class BookServiceTests
 {
-    [TestFixture]
-    public class BookServiceTests
+    [SetUp]
+    public void SetUp()
     {
-        private Mock<IBookRepository> _mockBookRepository;
+        _mockBookRepository = new Mock<IBookRepository>();
+    }
 
-        [SetUp]
-        public void SetUp()
+    private Mock<IBookRepository> _mockBookRepository;
+
+    private BookService Sut => new(_mockBookRepository.Object);
+
+    // This test checks the constructors parameters all have guard clauses
+    [Test]
+    public void Ctor_NullArgument_ThrowsNullArgumentException()
+    {
+        var fixture = new Fixture();
+        var assertion = new GuardClauseAssertion(fixture.Customize(new AutoMoqCustomization()));
+        assertion.Verify(typeof(BookService).GetConstructors());
+    }
+
+    [Test]
+    [AutoData]
+    public async Task CreateBookAsync_CallsRespository_WithParameter(Book book)
+    {
+        await Sut.CreateBookAsync(book);
+
+        var parameters = new List<Book>();
+        _mockBookRepository.Verify(br => br.CreateBookAsync(Capture.In(parameters)), Times.Once);
+
+        using (new AssertionScope())
         {
-            _mockBookRepository = new Mock<IBookRepository>();
+            parameters.Should().HaveCount(1);
+            parameters.Single().Should().Be(book);
         }
+    }
 
-        private BookService Sut => new (_mockBookRepository.Object);
+    [Test]
+    [AutoData]
+    public async Task DeleteBookAsync_CallsRespository_WithParameter(int id)
+    {
+        await Sut.DeleteBookAsync(id);
 
-        // This test checks the constructors parameters all have guard clauses
-        [Test]
-        public void Ctor_NullArgument_ThrowsNullArgumentException()
+        var parameters = new List<int>();
+        _mockBookRepository.Verify(br => br.DeleteBookAsync(Capture.In(parameters)), Times.Once);
+
+        using (new AssertionScope())
         {
-            var fixture = new Fixture();
-            var assertion = new GuardClauseAssertion(fixture.Customize(new AutoMoqCustomization()));
-            assertion.Verify(typeof(BookService).GetConstructors());
+            parameters.Should().HaveCount(1);
+            parameters.Single().Should().Be(id);
         }
+    }
 
-        [Test]
-        [AutoData]
-        public async Task CreateBookAsync_CallsRespository_WithParameter(Book book)
+    [Test]
+    [AutoData]
+    public async Task GetBookByIdAsync_CallsRespository_WithParameter(int id)
+    {
+        await Sut.GetBookByIdAsync(id);
+
+        var parameters = new List<int>();
+        _mockBookRepository.Verify(br => br.GetBookByIdAsync(Capture.In(parameters)), Times.Once);
+
+        using (new AssertionScope())
         {
-            await Sut.CreateBookAsync(book);
-
-            var parameters = new List<Book>();
-            _mockBookRepository.Verify(br => br.CreateBookAsync(Capture.In(parameters)), Times.Once);
-
-            using (new AssertionScope())
-            {
-                parameters.Should().HaveCount(1);
-                parameters.Single().Should().Be(book);    
-            }
+            parameters.Should().HaveCount(1);
+            parameters.Single().Should().Be(id);
         }
+    }
 
-        [Test]
-        [AutoData]
-        public async Task DeleteBookAsync_CallsRespository_WithParameter(int id)
+    [Test]
+    [AutoData]
+    public async Task UpdateBookAsync_CallsRespository_WithParameter(int id, Book book)
+    {
+        await Sut.UpdateBookAsync(id, book);
+
+        var idParams = new List<int>();
+        var bookParams = new List<Book>();
+        _mockBookRepository.Verify(br => br.UpdateBookAsync(Capture.In(idParams), Capture.In(bookParams)), Times.Once);
+
+        using (new AssertionScope())
         {
-            await Sut.DeleteBookAsync(id);
-
-            var parameters = new List<int>();
-            _mockBookRepository.Verify(br => br.DeleteBookAsync(Capture.In(parameters)), Times.Once);
-
-            using (new AssertionScope())
-            {
-                parameters.Should().HaveCount(1);
-                parameters.Single().Should().Be(id);
-            }
+            idParams.Should().HaveCount(1);
+            idParams.Single().Should().Be(id);
+            bookParams.Should().HaveCount(1);
+            bookParams.Single().Should().Be(book);
         }
+    }
 
-        [Test]
-        [AutoData]
-        public async Task GetBookByIdAsync_CallsRespository_WithParameter(int id)
-        {
-            await Sut.GetBookByIdAsync(id);
+    [Test]
+    public async Task GetBooksAsync_CallsRespository()
+    {
+        await Sut.GetBooksAsync();
 
-            var parameters = new List<int>();
-            _mockBookRepository.Verify(br => br.GetBookByIdAsync(Capture.In(parameters)), Times.Once);
-
-            using (new AssertionScope())
-            {
-                parameters.Should().HaveCount(1);
-                parameters.Single().Should().Be(id);
-            }
-        }
-
-        [Test]
-        [AutoData]
-        public async Task UpdateBookAsync_CallsRespository_WithParameter(int id, Book book)
-        {
-            await Sut.UpdateBookAsync(id, book);
-
-            var idParams = new List<int>();
-            var bookParams = new List<Book>();
-            _mockBookRepository.Verify(br => br.UpdateBookAsync(Capture.In(idParams), Capture.In(bookParams)), Times.Once);
-
-            using (new AssertionScope())
-            {
-                idParams.Should().HaveCount(1);
-                idParams.Single().Should().Be(id);
-                bookParams.Should().HaveCount(1);
-                bookParams.Single().Should().Be(book);
-            }
-        }
-
-        [Test]
-        public async Task GetBooksAsync_CallsRespository()
-        {
-            await Sut.GetBooksAsync();
-
-            _mockBookRepository.Verify(br => br.GetBooksAsync(), Times.Once);
-        }
+        _mockBookRepository.Verify(br => br.GetBooksAsync(), Times.Once);
     }
 }

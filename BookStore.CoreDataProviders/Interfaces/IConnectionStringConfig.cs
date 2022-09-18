@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace BookStore.CoreDataProviders.Interfaces;
 
-namespace BookStore.CoreDataProviders.Interfaces
+public interface IConnectionStringConfig
 {
-    public interface IConnectionStringConfig
-    {
-        public string ConnectionString { get; set; }
-    }
+    public string ConnectionString { get; set; }
 }

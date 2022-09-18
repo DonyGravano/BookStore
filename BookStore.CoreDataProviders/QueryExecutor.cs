@@ -1,41 +1,28 @@
-﻿using Dapper;
-using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
+using Dapper;
 
-namespace BookStore.CoreDataProviders
+namespace BookStore.CoreDataProviders;
+
+public class QueryExecutor : IQueryExecutor
 {
-    public class QueryExecutor: IQueryExecutor
+    private readonly IDbConnection _dbConnection;
+
+    public QueryExecutor(IDbConnection dbConnection)
     {
-        private readonly IDbConnection _dbConnection;
+        _dbConnection = dbConnection ?? throw new ArgumentNullException(nameof(dbConnection));
+    }
 
-        public QueryExecutor(IDbConnection dbConnection)
-        {
-            _dbConnection = dbConnection ?? throw new ArgumentNullException(nameof(dbConnection));
-        }
+    public async Task<IReadOnlyList<TResult>> QueryAsync<TResult>(string query, object? parameters = null)
+    {
+        if (string.IsNullOrWhiteSpace(query)) throw new ArgumentNullException(nameof(query));
 
-        public async Task<IReadOnlyList<TResult>> QueryAsync<TResult>(string query, object? parameters = null)
-        {
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                throw new ArgumentNullException(nameof(query));
-            }
+        return (await _dbConnection.QueryAsync<TResult>(query, parameters)).ToList();
+    }
 
-            return (await _dbConnection.QueryAsync<TResult>(query, parameters)).ToList();
-        }
+    public async Task<int> ExecuteAsync(string sql, object? parameters = null)
+    {
+        if (string.IsNullOrWhiteSpace(sql)) throw new ArgumentNullException(nameof(sql));
 
-        public async Task<int> ExecuteAsync(string sql, object? parameters = null)
-        {
-            if (string.IsNullOrWhiteSpace(sql))
-            {
-                throw new ArgumentNullException(nameof(sql));
-            }
-
-            return await _dbConnection.ExecuteAsync(sql, parameters);
-        }
+        return await _dbConnection.ExecuteAsync(sql, parameters);
     }
 }

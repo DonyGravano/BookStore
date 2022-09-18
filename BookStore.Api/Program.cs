@@ -5,8 +5,8 @@ using BookStore.CoreDataProviders;
 var builder = WebApplication.CreateBuilder(args);
 
 var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json").Build();
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json").Build();
 
 // Add services to the container.
 
