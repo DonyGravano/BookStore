@@ -29,3 +29,4 @@ Please see the spec.md file in the codebase for the technical spec
 -	Sadly I don't have ReSharper on my personal PC so could not use that for code clean-up and formatting.   
 -	I'd also like to make use of JetBrains' dotCover tool to run code coverage over the solution and see what tests I'm missing. I know I'm missing some sections such as the ConnectionStringConfig class
 -	I've used the .net6 new console app template for the program.cs but I can't seem to call it for a test, i'd like investigate this so that I can test that the DI works correctly  
+-	I'm not a huge fan of having lots of logic in the controllers so given more time I'd move the validation to the application layer
