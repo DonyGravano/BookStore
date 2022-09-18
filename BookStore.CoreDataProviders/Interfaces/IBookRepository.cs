@@ -9,10 +9,10 @@ namespace BookStore.CoreDataProviders.Interfaces
 {
     public interface IBookRepository
     {
-        public Task<Book> CreateBook(Book book);
-        public Task<Book> GetBookById(Book book);
-        public Task<IReadOnlyList<Book>> GetBooks(Book book);
-        public Task<Book> UpdateBook(int id, Book book);
-        public Task<bool> DeleteBook(int id);
+        public Task<Book> CreateBookAsync(Book book);
+        public Task<Book> GetBookByIdAsync(Book book);
+        public Task<IReadOnlyList<Book>> GetBooksAsync(Book book);
+        public Task<Book> UpdateBookAsync(int id, Book book);
+        public Task<bool> DeleteBookAsync(int id);
     }
 }
