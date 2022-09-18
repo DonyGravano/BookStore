@@ -1,15 +1,31 @@
 # BookStore
 
+Please see the spec.md file in the codebase for the technical spec
+
 ## Assumptions
 
+-	It's OK to have a local DB used for the project and use that during run time
+-	I've made some rough assumptions on the validation of the book model
+-	No acceptance tests are needed
+
 ## Design Notes
+-	I've used dependency injection and interfaces to register everything as it provides good flexiblity for testing and if logic/implementations are ever needed to be swapped out.
 -	I don't have ReSharper on my personal PC so code formatting won't be auto checked
 -	The amount of abstractions and projects I've done for this project may seem overkill as the project is small but I like to do it to support extending projects and to have things modular
--	I haven't used a proper database implementation as it would take more time to setup. I'd like to use Entity Framework at some point but I haven't yet had the chance to use it properly.
-	MySQL could be used but then I'd need to have a local DB setup and I don't feel it offers much more for the tech test
+-	I've opted to use SqlLite for the database since it was easy to get setup. Ideally I'd like to use EntityFramework which I did try for this but it was taking too long to get setup as I find it quite finicky
+-	I've not done any normalisation on the database, ideally there would be a separate Author table which is a ForeignKey to the books table
+-	I've created a wrapper around the DB connections that uses Dapper as it's hard to mock Dapper
 
 ## Process
 -	I won't be following any git workflows such as git flow or trunk based as this task is too small for them
--	I've stubbed the project and some interfaces out
--	Next i've began to write tests for the classes and then write the logic for them. I've used a somewhat TDD approach
--	I'm using NUnit for my tests as it's what I'm most familiar with but given more time I'd opt to use XUnit
+-	I haven't done as many small regular commits as I wanted as i've taken a few breaks throughout coding and the code was rarely in a runnable state
+
+## Testing
+-	I TDD'd the application using the red, green, refactor process, however classes were stubbed out prior
+-	I've used NUnit as it's what i'm most familiar with so it was the quickest to get setup, however with more time i'd opt for XUnit
+-	I've made use of FluentValidations, Moq and AutoFixture for the tests, it might seem a bit overkill but it's my preferred way of doing tests
+
+## What improvements would I make
+-	Sadly I don't have ReSharper on my personal PC so could not use that for code clean-up and formatting.   
+-	I'd also like to make use of JetBrains' dotCover tool to run code coverage over the solution and see what tests I'm missing. I know I'm missing some sections such as the ConnectionStringConfig class
+-	I've used the .net6 new console app template for the program.cs but I can't seem to call it for a test, i'd like investigate this so that I can test that the DI works correctly  

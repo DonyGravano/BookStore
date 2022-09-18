@@ -20,4 +20,8 @@
     <PackageReference Include="coverlet.collector" Version="3.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookStore.Api\BookStore.Api.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,30 +1,54 @@
-﻿using BookStore.Models;
+﻿using BookStore.Application.Interfaces;
+using BookStore.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.Api.Controllers
 {
     public class BookController : Controller
     {
-        public BookController()
-        {
+        private readonly IBookService _bookService;
+        private readonly IValidator<Book> _bookValidator;
 
+        public BookController(IBookService bookService, IValidator<Book> bookValidator)
+        {
+            _bookService = bookService ?? throw new ArgumentNullException(nameof(bookService));
+            _bookValidator = bookValidator ?? throw new ArgumentNullException(nameof(bookValidator));
         }
 
         [HttpPost]
         [Route("books")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        public async Task<ActionResult<int>> PostBook(Book book)
         {
-            return new Book();
+            try
+            {
+                var validationResult = await _bookValidator.ValidateAsync(book);
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(string.Join('|', validationResult.Errors.Select(e => e.ErrorMessage)));
+                }
+                var newBookId = await _bookService.CreateBookAsync(book);
+                return new ObjectResult(newBookId)
+                {
+                    StatusCode = StatusCodes.Status201Created
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
 
         [HttpGet]
         [Route("books")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IReadOnlyCollection<Book>>> BooksAsync()
+        public async Task<ActionResult<IReadOnlyList<Book>>> BooksAsync()
         {
-            return new List<Book>();
+            return Ok((await _bookService.GetBooksAsync()).OrderByDescending(b => b.Title));
         }
 
         [HttpPut]
@@ -32,9 +56,23 @@ namespace BookStore.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Book>> PutBookByIdAsync([FromRoute] int id)
+        public async Task<ActionResult> PutBookByIdAsync([FromRoute] int id, [FromBody] Book book)
         {
-            return new Book();
+            try
+            {
+                var validationResult = await _bookValidator.ValidateAsync(book);
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(string.Join('|', validationResult.Errors.Select(e => e.ErrorMessage)));
+                }
+                await _bookService.UpdateBookAsync(id, book);
+                return Ok();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         [HttpGet]
@@ -43,7 +81,15 @@ namespace BookStore.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Book>> GetBookByIdAsync([FromRoute] int id)
         {
-            return new Book();
+            try
+            {
+                return Ok(await _bookService.GetBookByIdAsync(id));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         [HttpDelete]
@@ -52,7 +98,16 @@ namespace BookStore.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteBookByIdAsync([FromRoute] int id)
         {
-            return Ok();
+            try
+            {
+                await _bookService.DeleteBookAsync(id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
