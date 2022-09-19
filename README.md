@@ -34,3 +34,4 @@ You shouldn't need to do anything specific to run the code. It is worth noting t
 -	I'd also like to make use of JetBrains' dotCover tool to run code coverage over the solution and see what tests I'm missing. I know I'm missing some sections such as the ConnectionStringConfig class
 -	I've used the .net6 new console app template for the program.cs but I can't seem to call it for a test, i'd like investigate this so that I can test that the DI works correctly  
 -	I'm not a huge fan of having lots of logic in the controllers so given more time I'd move the validation to the application layer
+-   I don't really like having the SQL in the code but it does give benefits of having it in source control, stored procedures may be the better option if they were included in the solution
