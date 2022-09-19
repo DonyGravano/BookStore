@@ -27,7 +27,7 @@ You shouldn't need to do anything specific to run the code. It is worth noting t
 ## Testing
 -	I TDD'd the application using the red, green, refactor process, however classes were stubbed out prior
 -	I've used NUnit as it's what i'm most familiar with so it was the quickest to get setup, however with more time i'd opt for XUnit
--	I've made use of FluentValidations, Moq and AutoFixture for the tests, it might seem a bit overkill but it's my preferred way of doing tests
+-	I've made use of FluentAssertions, Moq and AutoFixture for the tests, it might seem a bit overkill but it's my preferred way of doing tests
 
 ## What improvements would I make
 -	Sadly I don't have ReSharper on my personal PC so could not use that for code clean-up and formatting.   
